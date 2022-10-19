@@ -25,8 +25,7 @@ class Pets extends Component{
       },
       ()=>{
           fetch("http://localhost:3004/pets")
-          .then(res=>res.json())
-          .then(result=>this.setState({
+             .then(result=>this.setState({
               isLoading:false,
               pets:result
           })).catch(console.log);
@@ -43,13 +42,13 @@ class Pets extends Component{
                   pet=> {
                       const {name,species,favFoods,birthYear,photo}=pet;
                       return(
-                          <div>
-                                  <p key="{name}"><strong>Name :</strong> {name}</p>
-                                  <p>Species : {species}</p>
+                            <div key={name}>
+                                  <p><strong>Name :</strong> {name}</p>
+                                  <p >Species : {species}</p>
                                   <p>favFoods: {favFoods}</p>
                                   <p>BirthYear: {birthYear}</p>
                                   <p>Photo: {photo}</p>
-                              </div>
+                            </div>
                       )
                   }
               )}
