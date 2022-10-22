@@ -23,7 +23,21 @@ app.get("/sales",(req,res)=>{
     });
 });
 
-app.get("",()=>{});
+app.get("/sales/:id",(req,res)=>{
+    const id=req.params.id;
+    sale=db.collection("sales").find({_id:id})
+    .then(data=>{
+        if(!data)
+            res.status(404).send({message: "Sale details with id "+id+" not found"});
+        else    
+            res.send(data);
+    })
+    .catch(err=>{
+        res.status(500);
+        res.send({message: "Error reading sale details...."})
+
+    })
+});
 
 app.post("/sales",(req,res)=>{
     const sale=req.body;
