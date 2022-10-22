@@ -35,7 +35,7 @@ app.get('/sales', function(req, res) {
             // process todo list
             sales.forEach(function(sale){
               output += '<tr><td>' + sale._id + '</td><td>' + sale.item + '</td>'+
-              '<td>'+sale.price+'</td><td>'+sale.quantity+'</td><td>'+sale.description+'</td></tr>';
+              '<td>'+sale.price+'</td><td>'+sale.quantity+'</td><td>'+sale.date+'</td></tr>';
             });
   
             // write HTML output (ending)
