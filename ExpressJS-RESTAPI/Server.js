@@ -25,17 +25,16 @@ app.get("/sales",(req,res)=>{
 
 app.get("/sales/:id",(req,res)=>{
     const id=req.params.id;
-    sale=db.collection("sales").find({_id:id})
-    .then(data=>{
-        if(!data)
+    sale=db.collection("sales").findById({"_id":id}).
+    then(data=>{
+       if(!data)
             res.status(404).send({message: "Sale details with id "+id+" not found"});
-        else    
+        else   
             res.send(data);
     })
     .catch(err=>{
         res.status(500);
-        res.send({message: "Error reading sale details...."})
-
+        res.send({message: "Error reading sale details...."});
     })
 });
 
@@ -56,9 +55,35 @@ app.post("/sales",(req,res)=>{
 
 });
 
-app.put("",()=>{});
+app.put("/sales/:id",(req,res)=>{
+    
+    if(!req.body)
+    {
+        return res.status(400).send({message:"new Data to be update can not be blank.."});
+    }
+    const id=req.params.id;
 
-app.delete("",()=>{});
+    const item=req.body.item;
+    const price=req.body.price;
+    const quantity=req.body.quantity;
+    const date=req.body.date;
+    db.collection("sales").updateOne({"_id":id},{$set: {"item":item,"price":price,"quantity":quantity,"date":date}})
+    .then(data=>{
+        res.status(200).send({message: "Record update successfully.."});
+    }); 
+});
+
+app.delete("/sales/:id",(req,res)=>{
+    const id=req.params.id;
+    db.collection("sales").remove({"_id":id})
+    .then((data)=>{
+
+        if(!data)
+           res.status().send({message: "Can not fine record with id : "+id+" to be deleted.."});
+        else
+            res.status(200).send({message:"Record with id "+id+" deleted successfully.."});
+    });
+});
 
 app.listen(3000,()=>{
     console.log("Server Listening on 3000");
