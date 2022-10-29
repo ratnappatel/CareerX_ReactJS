@@ -11,6 +11,7 @@ export default class SimpleForm extends Component{
     handleSubmit = evt =>{
         evt.preventDefault();
         alert("Today's Topic was : "+this.state.topicName);
+        
 
     }
     render(){
