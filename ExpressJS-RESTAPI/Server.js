@@ -1,8 +1,10 @@
 const express = require('express');
+const mongo1=require('mongodb');
 const mongo = require('mongodb').MongoClient;
 
+
 const app=express();
-const url="mongodb://localhost:27017/ecom";
+const url="mongodb://localhost:27017";
 let db;
 
 app.use(express.json());
@@ -13,6 +15,7 @@ mongo.connect(url,(err,client)=>{
     db=client.db('ecom');
 
 });
+
 
 app.get("/sales",(req,res)=>{
     sales=db.collection("sales").find({}).toArray((err,doc)=>{
@@ -25,9 +28,9 @@ app.get("/sales",(req,res)=>{
 
 app.get("/sales/:id",(req,res)=>{
     
-    const id=req.params.id;
-    var o_id = new mongo.ObjectID(id);
-    sale=db.collection("sales").find({"_id":o_id});
+    const id=parseInt(req.params.id);
+    var o_id = new mongo1.ObjectId(id);
+    sale= db.collection("sales").findOne({_id: o_id});
     res.send(sale);
 });
 
@@ -60,15 +63,17 @@ app.put("/sales/:id",(req,res)=>{
     const price=req.body.price;
     const quantity=req.body.quantity;
     const date=req.body.date;
-    db.collection("sales").updateOne({"_id":id},{$set: {"item":item,"price":price,"quantity":quantity,"date":date}})
+    db.collection("sales").findOneAndReplace({"_id":id},{$set: {"item":item,"price":price,"quantity":quantity,"date":date}})
     .then(data=>{
         res.status(200).send({message: "Record update successfully.."});
     }); 
 });
 
 app.delete("/sales/:id",(req,res)=>{
-    const id=req.params.id;
-    db.collection("sales").remove({"_id":id})
+    
+    const id=parseInt(req.params.id);
+    var o_id = new mongo1.ObjectId(id);
+    db.collection("sales").deleteOne({"_id":o_id})
     .then((data)=>{
 
         if(!data)

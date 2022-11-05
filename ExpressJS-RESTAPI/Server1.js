@@ -1,60 +1,21 @@
-var express = require('express');
-var app = express();
+const {MongoClient} =require('mongodb');
+const express = require('express');
+const url='mongodb://localhost:27017';
+const client=new MongoClient(url);
 
-// Get MongoClient
-var MongoClient = require('mongodb').MongoClient;
+const app=express();
+app.use(express.json());
+const dbName='ecom';
 
-// db url, collection name and db name
-const dburl = 'mongodb://localhost:27017';
-const dbname = 'ecom';
-const collname = 'sales';
+async function main(){
+  await client.connect();
+  console.log('Connected to Database...');
+  const db=client.db(dbName);
+  const collection=db.collection('sales');
+  return 'done';
+}
+main()
+.then(console.log)
+.catch(console.error)
+.finally(()=>client.close());
 
-
-app.get('/sales', function(req, res) {
-
-    // connect to DB
-    MongoClient.connect(dburl, function(err, client) {
-      if (!err) {
-  
-        // Get db
-        const db = client.db(dbname);
-  
-        // Get collection
-        const collection = db.collection(collname);
-        console.log(collection);
-        // Find all documents in the collection
-        collection.find({}).toArray(function(err, sales) {
-          if (!err) {
-  
-            // write HTML output
-            var output = '<html><body>';
-            output += '<h1>List of Sales</h1>';
-            output += '<table border="1"><tr><td><b>' + 'ID' + '</b></td><td><b>' 
-            + 'Item' + '</b></td><td><b>'+'Price'+'</b></td><td><b>'+'Quantity'+'</b></td></tr>';
-  
-            // process todo list
-            sales.forEach(function(sale){
-              output += '<tr><td>' + sale._id + '</td><td>' + sale.item + '</td>'+
-              '<td>'+sale.price+'</td><td>'+sale.quantity+'</td><td>'+sale.date+'</td></tr>';
-            });
-  
-            // write HTML output (ending)
-            output += '</table></body></html>'
-  
-            // send output back
-            res.send(output);
-  
-            // log data to the console as well
-            console.log(todos);
-          }
-        });
-  
-        // close db client
-        client.close();
-      }
-    });
-  });
-
-  app.listen(3000,()=>{
-    console.log("Server Listening on 3000");
-});
