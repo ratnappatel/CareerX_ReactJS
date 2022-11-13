@@ -5,6 +5,7 @@ class Hello extends React.Component{
     constructor(props)
     {
         super(props);
+        this.state={};
     }
   // a control for lifecycle phases of React Component
     render(){
